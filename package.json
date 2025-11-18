@@ -1,0 +1,22 @@
+{
+  "name": "compress-image",
+  "version": "0.1.0",
+  "description": "Compress image using sharp",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "compress": "node index.js"
+  },
+  "keywords": [
+    "image",
+    "compress",
+    "sharp"
+  ],
+  "author": "vsirrr",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "chalk": "^5.6.2",
+    "mime": "^4.1.0",
+    "sharp": "^0.34.5"
+  }
+}
