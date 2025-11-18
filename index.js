@@ -11,25 +11,31 @@ const options = {
   quality: 75,
 };
 
-function checkDir() {
-  const isExist = fs.existsSync(outputDir);
-  if (!isExist) {
-    fs.mkdir(outputDir, (err) => {
-      if (err) {
-        console.error(chalk.red("创建目录时出错:"), err);
-      } else {
-        console.log(chalk.green("目录创建成功"));
-      }
-    });
-  } else {
-    fs.rm(outputDir, { recursive: true }, (err) => {
-      if (err) {
-        console.error(chalk.red("删除目录时出错:"), err);
-      } else {
-        console.log(chalk.green("目录删除成功"));
-      }
-    });
-  }
+async function checkDir() {
+  return new Promise((resolve, reject) => {
+    const isExist = fs.existsSync(outputDir);
+    if (!isExist) {
+      fs.mkdir(outputDir, (err) => {
+        if (err) {
+          console.error(chalk.red("创建目录时出错:"), err);
+          reject(err);
+        } else {
+          console.log(chalk.green("目录创建成功"));
+          resolve();
+        }
+      });
+    } else {
+      fs.rm(outputDir, { recursive: true }, (err) => {
+        if (err) {
+          console.error(chalk.red("删除目录时出错:"), err);
+          reject(err);
+        } else {
+          console.log(chalk.green("目录删除成功"));
+          resolve();
+        }
+      });
+    }
+  });
 }
 
 function getFileType(filePath) {
@@ -61,7 +67,7 @@ function getCompressType(fileType) {
   } else if (fileType.mime === "image/webp") {
     return "webp";
   } else {
-    return "jpeg";
+    return "不支持的文件类型";
   }
 }
 
@@ -79,7 +85,10 @@ function compress() {
       const filePath = path.join(targetDir, file);
       const fileType = getFileType(filePath);
       console.log(chalk.blue("文件类型:"), fileType);
-      if (typeof fileType === "object" && fileType !== null) {
+      if (
+        typeof fileType === "object" &&
+        getCompressType(fileType) !== "不支持的文件类型"
+      ) {
         const fileDir = path.join(
           outputDir,
           Math.random().toString(36).substring(2)
@@ -92,11 +101,11 @@ function compress() {
         }
         instance[getCompressType(fileType)]({
           quality: options.quality,
-        }).toFile(fileName, (err, info) => {
+        }).toFile(fileName, (err) => {
           if (err) {
-            console.error(chalk.red("处理文件时出错:"), err);
+            console.error(chalk.red("处理文件时出错:"), fileName);
           } else {
-            console.log(chalk.green("文件处理完成:"), info);
+            console.log(chalk.green("文件处理完成:"), fileName);
           }
         });
       }
@@ -104,8 +113,8 @@ function compress() {
   });
 }
 
-function bootstrap() {
-  checkDir();
+async function bootstrap() {
+  await checkDir();
   compress();
 }
 
