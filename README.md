@@ -1,3 +1,10 @@
-# compress-image
+# 压缩图片
 
-compress image use sharp
+> 使用 sharp 库压缩图片
+
+## 使用方法
+
+1. 克隆仓库并安装依赖
+2. 在项目中创建 `source` 文件夹将要压缩的图片放入到里面
+3. 运行压缩脚本 `npm run compress`
+4. 压缩后的图片将输出到 `output` 文件夹
