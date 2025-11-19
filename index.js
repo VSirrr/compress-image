@@ -7,9 +7,10 @@ import chalk from "chalk";
 const targetDir = "./source";
 const outputDir = "./output";
 const options = {
-  // width: 192,
+  // width: 350,
   quality: 75,
 };
+const LOGO_WIDTH = 192
 
 async function checkDir() {
   return new Promise((resolve, reject) => {
@@ -89,15 +90,15 @@ function compress() {
         typeof fileType === "object" &&
         getCompressType(fileType) !== "不支持的文件类型"
       ) {
-        const fileDir = path.join(
-          outputDir,
-          Math.random().toString(36).substring(2)
-        );
-        const fileName = path.join(fileDir, path.basename(file));
-        fs.mkdirSync(fileDir, { recursive: true });
+        // const fileDir = path.join(
+        //   outputDir,
+        //   Math.random().toString(36).substring(2)
+        // );
+        const fileName = path.join(outputDir, path.basename(file));
+        fs.mkdirSync(outputDir, { recursive: true });
         const image = sharp(filePath);
-        if (options.width) {
-          image.resize({ width: options.width });
+        if (options.width || file.endsWith("logo.png")) {
+          image.resize({ width: options.width || LOGO_WIDTH });
         }
         image[getCompressType(fileType)]({
           quality: options.quality,
