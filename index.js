@@ -95,11 +95,11 @@ function compress() {
         );
         const fileName = path.join(fileDir, path.basename(file));
         fs.mkdirSync(fileDir, { recursive: true });
-        const instance = sharp(filePath);
+        const image = sharp(filePath);
         if (options.width) {
-          instance.resize({ width: options.width });
+          image.resize({ width: options.width });
         }
-        instance[getCompressType(fileType)]({
+        image[getCompressType(fileType)]({
           quality: options.quality,
         }).toFile(fileName, (err) => {
           if (err) {
