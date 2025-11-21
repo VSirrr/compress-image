@@ -10,6 +10,13 @@ const options = {
   // width: 192,
   quality: 75,
 };
+const MIME_TYPES = {
+  "image/png": "png",
+  "image/gif": "gif",
+  "image/jpeg": "jpeg",
+  "image/webp": "webp",
+};
+
 const date = new Date().toLocaleDateString().replace(/\//g, "-");
 
 function getFileType(filePath) {
@@ -34,15 +41,7 @@ function getFileType(filePath) {
 }
 
 function getCompressType(fileType) {
-  if (fileType.mime === "image/jpeg") {
-    return "jpeg";
-  } else if (fileType.mime === "image/png") {
-    return "png";
-  } else if (fileType.mime === "image/webp") {
-    return "webp";
-  } else {
-    return "不支持的文件类型";
-  }
+  return MIME_TYPES[fileType.mime] || "不支持的文件类型";
 }
 
 function compress() {
@@ -58,21 +57,20 @@ function compress() {
     files.forEach((file) => {
       const filePath = path.join(targetDir, file);
       const fileType = getFileType(filePath);
+      const compressType = getCompressType(fileType);
       console.log(chalk.blue("文件类型:"), fileType);
-      if (
-        typeof fileType === "object" &&
-        getCompressType(fileType) !== "不支持的文件类型"
-      ) {
+      console.log(chalk.blue("压缩类型:"), compressType);
+      if (typeof fileType === "object" && compressType !== "不支持的文件类型") {
         const fileDir = path.join(outputDir, date, path.dirname(file));
         const fileName = path.join(fileDir, path.basename(file));
         if (!fs.existsSync(fileDir)) {
           fs.mkdirSync(fileDir, { recursive: true });
         }
-        const image = sharp(filePath);
+        const image = sharp(filePath, { animated: true });
         if (options.width) {
           image.resize({ width: options.width });
         }
-        image[getCompressType(fileType)]({
+        image[compressType]({
           quality: options.quality,
         }).toFile(fileName, (err) => {
           if (err) {
