@@ -10,33 +10,7 @@ const options = {
   // width: 192,
   quality: 75,
 };
-
-async function checkDir() {
-  return new Promise((resolve, reject) => {
-    const isExist = fs.existsSync(outputDir);
-    if (!isExist) {
-      fs.mkdir(outputDir, (err) => {
-        if (err) {
-          console.error(chalk.red("创建目录时出错:"), err);
-          reject(err);
-        } else {
-          console.log(chalk.green("目录创建成功"));
-          resolve();
-        }
-      });
-    } else {
-      fs.rm(outputDir, { recursive: true }, (err) => {
-        if (err) {
-          console.error(chalk.red("删除目录时出错:"), err);
-          reject(err);
-        } else {
-          console.log(chalk.green("目录删除成功"));
-          resolve();
-        }
-      });
-    }
-  });
-}
+const date = new Date().toLocaleDateString().replace(/\//g, "-");
 
 function getFileType(filePath) {
   try {
@@ -89,12 +63,11 @@ function compress() {
         typeof fileType === "object" &&
         getCompressType(fileType) !== "不支持的文件类型"
       ) {
-        const fileDir = path.join(
-          outputDir,
-          Math.random().toString(36).substring(2)
-        );
+        const fileDir = path.join(outputDir, date, path.dirname(file));
         const fileName = path.join(fileDir, path.basename(file));
-        fs.mkdirSync(fileDir, { recursive: true });
+        if (!fs.existsSync(fileDir)) {
+          fs.mkdirSync(fileDir, { recursive: true });
+        }
         const image = sharp(filePath);
         if (options.width) {
           image.resize({ width: options.width });
@@ -113,9 +86,4 @@ function compress() {
   });
 }
 
-async function bootstrap() {
-  await checkDir();
-  compress();
-}
-
-bootstrap();
+compress();
