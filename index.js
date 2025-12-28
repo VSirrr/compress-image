@@ -7,7 +7,8 @@ import chalk from "chalk";
 const targetDir = "./source";
 const outputDir = "./output";
 const options = {
-  // width: 350,
+  // type: "webp",
+  width: 350,
   quality: 75,
 };
 const LOGO_WIDTH = 192;
@@ -71,9 +72,12 @@ function compress() {
         if (options.width || file.endsWith("logo.png")) {
           image.resize({ width: options.width || LOGO_WIDTH });
         }
-        image[compressType]({
+        const outputFile = options.type
+          ? fileName.replace(fileType.ext, "." + options.type)
+          : fileName;
+        image[options.type || compressType]({
           quality: options.quality,
-        }).toFile(fileName, (err) => {
+        }).toFile(outputFile, (err) => {
           if (err) {
             console.error(chalk.red("处理文件时出错:"), fileName);
           } else {
