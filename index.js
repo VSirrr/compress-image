@@ -8,10 +8,10 @@ const targetDir = "./source";
 const outputDir = "./output";
 const options = {
   // type: "webp",
-  width: 350,
+  // width: 350,
   quality: 75,
 };
-const LOGO_WIDTH = 192;
+
 const MIME_TYPES = {
   "image/png": "png",
   "image/gif": "gif",
@@ -69,13 +69,16 @@ function compress() {
           fs.mkdirSync(fileDir, { recursive: true });
         }
         const image = sharp(filePath, { animated: true });
-        if (options.width || file.endsWith("logo.png")) {
-          image.resize({ width: options.width || LOGO_WIDTH });
+        if (options.width) {
+          image.resize({ width: options.width });
         }
+        // 返回的文件类型
+        const outType = options.type || compressType;
+        // 输出文件路径、名称
         const outputFile = options.type
           ? fileName.replace(fileType.ext, "." + options.type)
           : fileName;
-        image[options.type || compressType]({
+        image[outType]({
           quality: options.quality,
         }).toFile(outputFile, (err) => {
           if (err) {
