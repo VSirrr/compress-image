@@ -7,9 +7,9 @@ import chalk from "chalk";
 const targetDir = "./source";
 const outputDir = "./output";
 const options = {
-  // type: "webp",
-  // width: 350,
+  // width: 375,
   quality: 75,
+  // type: "webp",
 };
 
 const MIME_TYPES = {
