@@ -8,6 +8,7 @@ const targetDir = "./source";
 const outputDir = "./output";
 const options = {
   // width: 375,
+  // width: 192,
   quality: 75,
   // type: "webp",
 };
